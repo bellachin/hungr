@@ -3,45 +3,47 @@ import Meal from "../models/Meal.js";
 
 const router = express.Router();
 
-// Get all meals
-router.get("/", async (req, res) => {
-  try {
-    const meals = await Meal.find();
-    res.json(meals);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// helper: re-rank meals for one user
+async function rankUserMeals(userId) {
+  const meals = await Meal.find({ userId });
+  if (meals.length < 5) return; // only rank if 5+
 
-// Add a new meal
+  // bubble sort by rating
+  for (let i = 0; i < meals.length - 1; i++) {
+    for (let j = 0; j < meals.length - i - 1; j++) {
+      if (meals[j].rating < meals[j + 1].rating) {
+        [meals[j], meals[j + 1]] = [meals[j + 1], meals[j]];
+      }
+    }
+  }
+
+  // assign rankScore
+  meals.forEach((meal, index) => {
+    meal.rankScore = meals.length - index;
+  });
+
+  // save all
+  for (const meal of meals) await meal.save();
+}
+
+// create meal + trigger ranking
 router.post("/", async (req, res) => {
   try {
-    const newMeal = new Meal(req.body);
+    const { userId, mealName, rating, ingredients, notes } = req.body;
+    const newMeal = new Meal({ userId, mealName, rating, ingredients, notes });
     await newMeal.save();
-    res.json({ message: "Meal added successfully" });
+    await rankUserMeals(userId);
+    res.json({ message: "Meal added and ranked (if 5+ meals)." });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-// Update a meal
-router.put("/:id", async (req, res) => {
-  try {
-    await Meal.findByIdAndUpdate(req.params.id, req.body);
-    res.json({ message: "Meal updated successfully" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// Delete a meal
-router.delete("/:id", async (req, res) => {
-  try {
-    await Meal.findByIdAndDelete(req.params.id);
-    res.json({ message: "Meal deleted successfully" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+// get meals for one user, highest rank first
+router.get("/user/:userId", async (req, res) => {
+  const meals = await Meal.find({ userId: req.params.userId })
+    .sort({ rankScore: -1, createdAt: -1 });
+  res.json(meals);
 });
 
 export default router;

@@ -2,8 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+import mealRoutes from "./routes/mealRoutes.js"; //janet
+import userRoutes from "./routes/userRoutes.js"; //janet
+import feedRoutes from "./routes/feedRoutes.js"; //janet
+
 
 dotenv.config();
 
@@ -23,16 +25,13 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Get __dirname in ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-// Serve static files from your separate frontend folder
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use("/api/users", userRoutes);//janet
+app.use("/api/meals", mealRoutes);//janet
+app.use("/api/feed", feedRoutes);//janet
 
-// SPA: serve index.html for all unmatched routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+app.get("/", (req, res) => {
+  res.send("Inventory backend running!");
 });
 
 // Start server on PORT from .env or 5001
