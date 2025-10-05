@@ -1,3 +1,38 @@
+// Camera button and receipt upload logic
+const cameraBtn = document.getElementById('cameraBtn');
+const receiptInput = document.getElementById('receiptInput');
+const resultBox = document.getElementById('resultBox');
+
+if (cameraBtn && receiptInput) {
+  cameraBtn.addEventListener('click', () => receiptInput.click());
+  receiptInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = 'Uploading...';
+    const formData = new FormData();
+    formData.append('receipt', file);
+    try {
+      const res = await fetch('http://localhost:5000/api/items/scan-receipt', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      let html = `<h4>Purchase Date:</h4><div>${data.purchaseDate ? new Date(data.purchaseDate).toLocaleDateString() : 'Not found'}</div>`;
+      html += '<h4>Items:</h4><ul>';
+      if (data.items && data.items.length > 0) {
+        html += data.items.map(item => `<li>${item.name}${item.price ? ` - $${item.price.toFixed(2)}` : ''}</li>`).join('');
+      } else {
+        html += '<li>No items found</li>';
+      }
+      html += '</ul>';
+      resultBox.innerHTML = html;
+    } catch (err) {
+      resultBox.innerHTML = `<span style="color:#ff6b6b">${err.message}</span>`;
+    }
+  });
+}
 const counters = document.querySelectorAll('.count');
 const statsSection = document.querySelector('.growing-library');
 

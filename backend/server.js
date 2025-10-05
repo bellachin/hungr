@@ -7,13 +7,13 @@ import userRoutes from "./routes/userRoutes.js"; //janet
 import feedRoutes from "./routes/feedRoutes.js"; //janet
 
 
-dotenv.config(); // ✅ Load environment variables
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Check if MONGO_URI is loaded
+// MongoDB connection
 const mongoURI = process.env.MONGO_URI;
 if (!mongoURI) {
   console.error("❌ MONGO_URI not found in .env file");
@@ -34,5 +34,6 @@ app.get("/", (req, res) => {
   res.send("Inventory backend running!");
 });
 
-const PORT = process.env.PORT || 5000;
+// Start server on PORT from .env or 5001
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
