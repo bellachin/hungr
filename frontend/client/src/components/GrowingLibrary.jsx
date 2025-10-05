@@ -75,8 +75,15 @@ const GrowingLibrary = () => {
     <section className="growing-library mobbin-main" style={{ position: "relative", marginBottom: 40, background: "linear-gradient(120deg, #98c1d9 0%, #8cba80 100%)" }}>
       <div className="floating-icons">
         {iconImages.map((src, index) => {
-          const top = `${Math.random() * 80 + 10}%`;
-          const left = `${Math.random() * 80 + 10}%`;
+          // Arrange icons in a circle around the stats bubble
+          const total = iconImages.length;
+          const angle = (2 * Math.PI * index) / total;
+          const radius = 120; // px distance from center
+          // Center of stats bubble (approximate)
+          const centerX = 50; // %
+          const centerY = 38; // %
+          const top = `calc(${centerY}% + ${Math.sin(angle) * radius}px)`;
+          const left = `calc(${centerX}% + ${Math.cos(angle) * radius}px)`;
           const driftClasses = ["drift1", "drift2", "drift3"];
           const animation = `${driftClasses[index % driftClasses.length]} ${15 + index*5}s ease-in-out infinite`;
           return (
@@ -85,7 +92,7 @@ const GrowingLibrary = () => {
               src={src}
               className={`float-icon icon${index+1}`}
               alt={`icon${index+1}`}
-              style={{ top, left, animation, filter: "drop-shadow(0 2px 8px #98c1d9) brightness(1.2)" }}
+              style={{ position: "absolute", top, left, animation, filter: "drop-shadow(0 2px 8px #98c1d9) brightness(1.2)", zIndex: 0 }}
             />
           );
         })}
