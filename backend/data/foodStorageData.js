@@ -188,4 +188,4 @@ const foodStorageData = [
   }
 ];
 
-module.exports = { foodStorageData };
+export { foodStorageData };
