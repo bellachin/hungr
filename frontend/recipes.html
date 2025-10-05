@@ -1,0 +1,285 @@
+<!-- frontend/recipes.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUNGR - Recipes</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #D9E9D8; /* Honeydew color from palette */
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    /* Navbar updates to match palette */
+    .navbar {
+      background: rgba(200, 212, 228, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-brand {
+      color: #2d5a2d !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    .nav-item {
+      color: #4a6a4a !important;
+    }
+
+    .nav-item:hover {
+      background: rgba(200, 228, 202, 0.4) !important;
+      color: #2d5a2d !important;
+    }
+
+    .nav-item.active {
+      background: rgba(200, 228, 202, 0.6) !important;
+      color: #2d5a2d !important;
+    }
+
+    .recipes-section {
+      padding: 150px 40px 60px; /* Changed from 120px to 150px */
+      min-height: 100vh;
+      background: #D9E9D8; /* Honeydew - matching body */
+    }
+
+    .recipes-section h2 {
+      text-align: center;
+      color: #2d5a2d;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 3rem;
+      padding-top: 1rem; /* Added padding on top of the heading */
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2.5rem;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .recipe-card {
+      padding: 0;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      overflow: hidden;
+      border: 2px solid rgba(200, 228, 202, 0.3);
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(45, 90, 45, 0.25);
+      border-color: #C8E4CA;
+    }
+
+    .recipe-card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 0;
+      margin-bottom: 0;
+      transition: transform 0.4s ease;
+    }
+
+    .recipe-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .recipe-card-content {
+      padding: 1.5rem;
+    }
+
+    .recipe-card h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.4rem;
+      color: #2d5a2d;
+      font-weight: 600;
+    }
+
+    .recipe-card p {
+      font-size: 1rem;
+      color: #5a7a5a;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Responsive breakpoints */
+    @media (min-width: 1800px) {
+      .recipes-section {
+        padding: 150px 80px 60px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 3.5rem;
+      }
+    }
+
+    @media (min-width: 1400px) and (max-width: 1799px) {
+      .recipes-section {
+        padding: 150px 60px 60px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 3rem;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-width: 1399px) {
+      .recipes-section {
+        padding: 140px 40px 60px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2.5rem;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .recipes-section {
+        padding: 130px 30px 50px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+    }
+
+    @media (min-width: 480px) and (max-width: 767px) {
+      .recipes-section {
+        padding: 110px 20px 40px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .recipe-card h3 {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 479px) {
+      .recipes-section {
+        padding: 100px 15px 30px; /* Updated */
+      }
+      
+      .recipes-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .recipe-card-content {
+        padding: 1.25rem;
+      }
+
+      .recipe-card h3 {
+        font-size: 1.2rem;
+      }
+
+      .recipe-card p {
+        font-size: 0.95rem;
+      }
+    }
+
+    /* Entrance animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .recipe-card {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">HUNGR</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="inventory.html" class="nav-item">Inventory</a>
+        <a href="recipes.html" class="nav-item active">Recipes</a>
+        <a href="faq.html" class="nav-item">Storage Tips</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="recipes-section">
+    <h2>Our Recipes</h2>
+    <div class="recipes-grid" id="recipesGrid">
+      <!-- Recipe cards will be inserted here dynamically -->
+    </div>
+  </section>
+
+  <script>
+    const recipes = [
+      {
+        title: "Pasta Primavera",
+        description: "Delicious pasta with fresh vegetables and a light garlic sauce.",
+        image: "images/pasta.jpeg"
+      },
+      {
+        title: "Avocado Toast",
+        description: "Simple and healthy breakfast with mashed avocado on toasted bread.",
+        image: "images/avocado_toast.jpeg"
+      },
+      {
+        title: "Berry Smoothie",
+        description: "A refreshing smoothie made with strawberries, blueberries, and banana.",
+        image: "images/smoothie.jpeg"
+      },
+      {
+        title: "Chicken Salad",
+        description: "Light and healthy salad with grilled chicken, greens, and vinaigrette.",
+        image: "images/chicken_salad.jpeg"
+      }
+    ];
+
+    const grid = document.getElementById('recipesGrid');
+
+    recipes.forEach((recipe, index) => {
+      const card = document.createElement('div');
+      card.className = 'recipe-card';
+      card.style.animationDelay = `${index * 0.15}s`;
+      card.innerHTML = `
+        <img src="${recipe.image}" alt="${recipe.title}" loading="lazy">
+        <div class="recipe-card-content">
+          <h3>${recipe.title}</h3>
+          <p>${recipe.description}</p>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
