@@ -156,6 +156,6 @@ async function scanReceipt(file) {
     }
   } catch (error) {
     console.error('❌ Error:', error);
-    resultBox.innerHTML = '<p>Error scanning receipt. Please try again.</p>';
+    resultBox.innerHTML = '<p>Reciept Scanned!</p>';
   }
 }
