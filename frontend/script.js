@@ -101,217 +101,20 @@
 
 // frontend/script.js
 
-const API_BASE_URL = 'http://localhost:5001/api';
+// frontend/script.js - Add proper logging
+const API_BASE_URL = 'http://localhost:5002/api';
 
-// Camera button functionality
+// Camera button handler
 document.getElementById('cameraBtn').addEventListener('click', function() {
-  // Trigger the hidden file input when camera button is clicked
+  console.log('📸 Camera button clicked');
   document.getElementById('receiptInput').click();
 });
 
-// Handle file selection/photo capture
-document.getElementById('receiptInput').addEventListener('change', async function(event) {
-  const file = event.target.files[0];
-  
-  if (file) {
-    console.log('Photo captured/selected:', file.name);
-    
-    // Show loading state
-    const resultBox = document.getElementById('resultBox');
-    resultBox.style.display = 'block';
-    resultBox.innerHTML = '<p>Processing receipt...</p>';
-    
-    try {
-      // For hackathon demo - simulate receipt processing
-      // In production, you'd send this to an OCR API
-      await processReceipt(file);
-    } catch (error) {
-      console.error('Error processing receipt:', error);
-      resultBox.innerHTML = '<p>Error processing receipt. Please try again.</p>';
-    }
-  }
-});
-
-// Process the receipt (simulate for hackathon)
-async function processReceipt(file) {
-  const resultBox = document.getElementById('resultBox');
-  
-  // For demo purposes - simulate OCR results
-  // In production, you'd use Google Vision API, AWS Textract, or similar
-  
-  // Simulated scanned items (replace with actual OCR later)
-  const mockScannedItems = [
-    "chicken breast",
-    "rice", 
-    "tomatoes",
-    "onions",
-    "garlic",
-    "olive oil"
-  ];
-  
-  // Display scanned items
-  resultBox.innerHTML = `
-    <h3>📸 Receipt Scanned Successfully!</h3>
-    <div class="scanned-items">
-      <h4>Items Found:</h4>
-      <ul>
-        ${mockScannedItems.map(item => `<li>${item}</li>`).join('')}
-      </ul>
-    </div>
-    <button id="findRecipesBtn" class="action-btn">
-      🍳 Find Recipes with These Items
-    </button>
-    <button id="saveItemsBtn" class="action-btn">
-      💾 Save to My Pantry
-    </button>
-  `;
-  
-  // Add event listeners to new buttons
-  document.getElementById('findRecipesBtn').addEventListener('click', () => {
-    findRecipes(mockScannedItems);
-  });
-  
-  document.getElementById('saveItemsBtn').addEventListener('click', () => {
-    saveItems(mockScannedItems);
-  });
-}
-
-// Find recipes with scanned items
-async function findRecipes(ingredients) {
-  const resultBox = document.getElementById('resultBox');
-  
-  try {
-    resultBox.innerHTML += '<p>🔍 Finding recipes...</p>';
-    
-    const response = await fetch(`${API_BASE_URL}/recipes/suggest`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ 
-        ingredients: ingredients,
-        useAPI: true 
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.success) {
-      displayRecipes(data.recipes);
-    }
-  } catch (error) {
-    console.error('Error finding recipes:', error);
-    resultBox.innerHTML += '<p>Could not find recipes. Please try again.</p>';
-  }
-}
-
-// Display recipe results
-function displayRecipes(recipes) {
-  const resultBox = document.getElementById('resultBox');
-  
-  let recipesHTML = '<div class="recipes-section"><h3>🍽️ Suggested Recipes:</h3>';
-  
-  // Show recipes you can make now
-  if (recipes.canMakeNow && recipes.canMakeNow.length > 0) {
-    recipesHTML += '<h4>✅ You can make now:</h4><ul>';
-    recipes.canMakeNow.forEach(recipe => {
-      recipesHTML += `<li><strong>${recipe.name}</strong> - ${recipe.prepTime + recipe.cookTime} mins</li>`;
-    });
-    recipesHTML += '</ul>';
-  }
-  
-  // Show API recipes
-  if (recipes.fromAPI && recipes.fromAPI.length > 0) {
-    recipesHTML += '<h4>🌟 More suggestions:</h4><ul>';
-    recipes.fromAPI.forEach(recipe => {
-      recipesHTML += `
-        <li>
-          <strong>${recipe.name}</strong>
-          ${recipe.missedIngredientCount > 0 ? 
-            `<br><small>Missing ${recipe.missedIngredientCount} ingredients</small>` : 
-            '<br><small>✓ All ingredients available!</small>'}
-        </li>`;
-    });
-    recipesHTML += '</ul>';
-  }
-  
-  recipesHTML += '</div>';
-  resultBox.innerHTML += recipesHTML;
-}
-
-// Save items to pantry
-async function saveItems(items) {
-  const resultBox = document.getElementById('resultBox');
-  
-  // For demo - just show success
-  resultBox.innerHTML += '<p>✅ Items saved to your pantry!</p>';
-  
-  // In production, you'd save to database
-  // await fetch(`${API_BASE_URL}/pantry/add`, ...)
-}
-
-// Animate stats on page load
-document.addEventListener('DOMContentLoaded', function() {
-  // Animate counters
-  const counters = document.querySelectorAll('.count');
-  
-  counters.forEach(counter => {
-    const target = +counter.getAttribute('data-target');
-    const increment = target / 100;
-    
-    const updateCounter = () => {
-      const current = +counter.innerText;
-      
-      if (current < target) {
-        counter.innerText = Math.ceil(current + increment);
-        setTimeout(updateCounter, 20);
-      } else {
-        counter.innerText = target.toLocaleString();
-      }
-    };
-    
-    updateCounter();
-  });
-  
-  // Show stats with animation
-  const stats = document.querySelectorAll('.stat');
-  stats.forEach((stat, index) => {
-    setTimeout(() => {
-      stat.classList.add('visible');
-    }, index * 200);
-  });
-  
-  // Add floating food icons
-  addFloatingIcons();
-});
-
-// Add floating food icons for visual effect
-function addFloatingIcons() {
-  const container = document.querySelector('.floating-icons');
-  const icons = ['🥗', '🍕', '🍜', '🥘', '🍰', '🥪', '🍲', '🌮'];
-  
-  icons.forEach((icon, index) => {
-    const iconElement = document.createElement('div');
-    iconElement.className = 'float-icon';
-    iconElement.textContent = icon;
-    iconElement.style.left = `${Math.random() * 100}%`;
-    iconElement.style.top = `${Math.random() * 100}%`;
-    iconElement.style.fontSize = `${30 + Math.random() * 20}px`;
-    iconElement.style.animationName = `drift${(index % 3) + 1}`;
-    iconElement.style.animationDuration = `${15 + Math.random() * 10}s`;
-    iconElement.style.animationIterationCount = 'infinite';
-    container.appendChild(iconElement);
-  });
-}
-
-// frontend/script.js - Update for scanning on homepage
-document.getElementById('cameraBtn').addEventListener('click', function() {
-  document.getElementById('receiptInput').click();
-});
-
+// File input handler
 document.getElementById('receiptInput').addEventListener('change', async function(event) {
   const file = event.target.files[0];
   if (file) {
+    console.log('📁 File selected:', file.name);
     await scanReceipt(file);
   }
 });
@@ -320,6 +123,8 @@ async function scanReceipt(file) {
   const resultBox = document.getElementById('resultBox');
   resultBox.style.display = 'block';
   resultBox.innerHTML = '<p>📸 Scanning receipt...</p>';
+  
+  console.log('🔄 Sending file to backend...');
   
   try {
     const formData = new FormData();
@@ -331,20 +136,26 @@ async function scanReceipt(file) {
     });
     
     const data = await response.json();
+    console.log('✅ Backend response:', data);
     
     if (data.success) {
+      const totalItems = Object.values(data.sorted).flat().length;
+      console.log(`📦 Total items sorted: ${totalItems}`);
+      
       resultBox.innerHTML = `
         <div class="scan-success">
           <h3>✅ Items Scanned & Sorted!</h3>
-          <p>${Object.values(data.sorted).flat().length} items have been added to your inventory</p>
+          <p>${totalItems} items have been added to your inventory</p>
           <a href="inventory.html" class="action-btn">
             📦 View Inventory
           </a>
         </div>
       `;
+    } else {
+      console.error('❌ Scan failed:', data.error);
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
     resultBox.innerHTML = '<p>Error scanning receipt. Please try again.</p>';
   }
 }

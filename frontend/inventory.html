@@ -6,6 +6,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HUNGR - My Inventory</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .item-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 6px;
+    }
+    
+    .item-name {
+      color: #333;
+      flex-grow: 1;
+    }
+    
+    .remove-btn {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .remove-btn:hover {
+      background: #cc0000;
+    }
+    
+    .loading {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation Bar -->
@@ -26,17 +61,17 @@
     
     <div class="inventory-grid">
       <div class="storage-section freezer">
-        <h3>🧊 Freezer</h3>
+        <h3>🧊 Freezer (<span id="freezerCount">0</span>)</h3>
         <ul id="freezerItems"></ul>
       </div>
       
       <div class="storage-section fridge">
-        <h3>❄️ Fridge</h3>
+        <h3>❄️ Fridge (<span id="fridgeCount">0</span>)</h3>
         <ul id="fridgeItems"></ul>
       </div>
       
       <div class="storage-section pantry">
-        <h3>🥫 Pantry</h3>
+        <h3>🥫 Pantry (<span id="pantryCount">0</span>)</h3>
         <ul id="pantryItems"></ul>
       </div>
     </div>
@@ -44,6 +79,9 @@
     <div class="inventory-actions">
       <button class="action-btn" onclick="getRecipesFromInventory()">
         🍳 Get Recipes from My Inventory
+      </button>
+      <button class="action-btn" onclick="clearAllInventory()" style="background: #ff4444;">
+        🗑️ Clear All Items
       </button>
     </div>
   </section>
@@ -55,40 +93,117 @@
     document.addEventListener('DOMContentLoaded', loadInventory);
     
     async function loadInventory() {
+      console.log('📋 Loading inventory...');
       try {
         const response = await fetch(`${API_BASE_URL}/receipt/inventory`);
         const data = await response.json();
+        
+        console.log('📦 Inventory data:', data);
         
         if (data.success) {
           displayInventory(data.inventory);
         }
       } catch (error) {
-        console.error('Error loading inventory:', error);
+        console.error('❌ Error loading inventory:', error);
       }
     }
     
     function displayInventory(inventory) {
+      // Update counts
+      document.getElementById('freezerCount').textContent = inventory.freezer.length;
+      document.getElementById('fridgeCount').textContent = inventory.fridge.length;
+      document.getElementById('pantryCount').textContent = inventory.pantry.length;
+      
       // Freezer items
       const freezerList = document.getElementById('freezerItems');
-      freezerList.innerHTML = inventory.freezer.map(item => 
-        `<li>${item}</li>`
-      ).join('') || '<li class="empty">No items</li>';
+      if (inventory.freezer.length > 0) {
+        freezerList.innerHTML = inventory.freezer.map(item => 
+          `<li class="item-container">
+            <span class="item-name">${item}</span>
+            <button class="remove-btn" onclick="removeItem('${item}', 'freezer')">Remove</button>
+          </li>`
+        ).join('');
+      } else {
+        freezerList.innerHTML = '<li class="empty">No items</li>';
+      }
       
       // Fridge items
       const fridgeList = document.getElementById('fridgeItems');
-      fridgeList.innerHTML = inventory.fridge.map(item => 
-        `<li>${item}</li>`
-      ).join('') || '<li class="empty">No items</li>';
+      if (inventory.fridge.length > 0) {
+        fridgeList.innerHTML = inventory.fridge.map(item => 
+          `<li class="item-container">
+            <span class="item-name">${item}</span>
+            <button class="remove-btn" onclick="removeItem('${item}', 'fridge')">Remove</button>
+          </li>`
+        ).join('');
+      } else {
+        fridgeList.innerHTML = '<li class="empty">No items</li>';
+      }
       
       // Pantry items
       const pantryList = document.getElementById('pantryItems');
-      pantryList.innerHTML = inventory.pantry.map(item => 
-        `<li>${item}</li>`
-      ).join('') || '<li class="empty">No items</li>';
+      if (inventory.pantry.length > 0) {
+        pantryList.innerHTML = inventory.pantry.map(item => 
+          `<li class="item-container">
+            <span class="item-name">${item}</span>
+            <button class="remove-btn" onclick="removeItem('${item}', 'pantry')">Remove</button>
+          </li>`
+        ).join('');
+      } else {
+        pantryList.innerHTML = '<li class="empty">No items</li>';
+      }
     }
     
-    async function getRecipesFromInventory() {
-      // Redirect to recipes page or show recipes
+    async function removeItem(itemName, location) {
+      console.log(`🗑️ Removing ${itemName} from ${location}`);
+      
+      if (!confirm(`Remove ${itemName} from ${location}?`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/receipt/remove-item`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ itemName, location })
+        });
+        
+        const data = await response.json();
+        console.log('Remove response:', data);
+        
+        if (data.success) {
+          // Reload inventory to show updated list
+          loadInventory();
+        } else {
+          alert('Failed to remove item');
+        }
+      } catch (error) {
+        console.error('❌ Error removing item:', error);
+      }
+    }
+    
+    async function clearAllInventory() {
+      if (!confirm('Are you sure you want to clear ALL items from your inventory?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/receipt/clear-inventory`, {
+          method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          loadInventory();
+        }
+      } catch (error) {
+        console.error('Error clearing inventory:', error);
+      }
+    }
+    
+    function getRecipesFromInventory() {
       window.location.href = 'recipes.html';
     }
   </script>

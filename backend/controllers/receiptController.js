@@ -1,6 +1,7 @@
 // backend/controllers/receiptController.js
 import multer from 'multer';
 import ocrService from '../services/ocrService.js';
+import fs from 'fs/promises';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -8,18 +9,24 @@ export const scanReceipt = [
   upload.single('receipt'),
   async (req, res) => {
     try {
-      const filePath = req.file ? req.file.path : null;
+      console.log('📸 Receipt scan endpoint hit');
       
-      // Get sorted items from OCR + OpenAI
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'No file uploaded' 
+        });
+      }
+      
+      const filePath = req.file.path;
       const sortedItems = await ocrService.extractTextFromReceipt(filePath);
       
-      // Store in database if PostgreSQL is connected
+      // Store in database
       if (req.app.locals.postgresPool) {
         const client = await req.app.locals.postgresPool.connect();
         try {
           await client.query('BEGIN');
           
-          // Store all items
           for (const location of ['freezer', 'fridge', 'pantry']) {
             for (const item of sortedItems[location] || []) {
               await client.query(
@@ -38,12 +45,20 @@ export const scanReceipt = [
         }
       }
       
+      // Clean up file
+      await fs.unlink(filePath).catch(console.error);
+      
       res.json({
         success: true,
         sorted: sortedItems
       });
+      
     } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
+      console.error('❌ Scan error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message
+      });
     }
   }
 ];
@@ -51,19 +66,15 @@ export const scanReceipt = [
 export const getInventory = async (req, res) => {
   try {
     if (!req.app.locals.postgresPool) {
-      // Return mock data if no database
       return res.json({
-        success: true,
-        inventory: {
-          freezer: ['Ice Cream', 'Frozen Pizza'],
-          fridge: ['Milk', 'Chicken', 'Eggs'],
-          pantry: ['Rice', 'Bread', 'Pasta']
-        }
+        success: false,
+        message: 'Database not connected',
+        inventory: { freezer: [], fridge: [], pantry: [] }
       });
     }
 
     const result = await req.app.locals.postgresPool.query(
-      'SELECT item_name, location FROM user_pantry ORDER BY location, item_name'
+      'SELECT DISTINCT item_name, location FROM user_pantry ORDER BY location, item_name'
     );
     
     const inventory = {
@@ -72,8 +83,73 @@ export const getInventory = async (req, res) => {
       pantry: result.rows.filter(i => i.location === 'pantry').map(i => i.item_name)
     };
     
-    res.json({ success: true, inventory });
+    res.json({ 
+      success: true, 
+      inventory,
+      totalItems: result.rows.length
+    });
+    
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('❌ Inventory error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+};
+
+export const removeItem = async (req, res) => {
+  try {
+    const { itemName, location } = req.body;
+    
+    if (!req.app.locals.postgresPool) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database not connected'
+      });
+    }
+    
+    const result = await req.app.locals.postgresPool.query(
+      'DELETE FROM user_pantry WHERE item_name = $1 AND location = $2',
+      [itemName, location]
+    );
+    
+    res.json({
+      success: true,
+      message: `Removed ${itemName} from ${location}`,
+      rowsDeleted: result.rowCount
+    });
+    
+  } catch (error) {
+    console.error('❌ Remove item error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+export const clearInventory = async (req, res) => {
+  try {
+    if (!req.app.locals.postgresPool) {
+      return res.status(500).json({
+        success: false,
+        message: 'Database not connected'
+      });
+    }
+    
+    await req.app.locals.postgresPool.query('DELETE FROM user_pantry');
+    
+    res.json({
+      success: true,
+      message: 'All inventory cleared'
+    });
+    
+  } catch (error) {
+    console.error('❌ Clear inventory error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 };
