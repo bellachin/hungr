@@ -8,6 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import pkg from 'pg';  
 const { Pool } = pkg;
+import recipeRoutes from './routes/recipeRoutes.js';
 
 
 dotenv.config();
@@ -57,7 +58,6 @@ if (process.env.DATABASE_URL) {
 
 // Import routes
 import faqRoutes from "./routes/faqRoutes.js";
-import recipeRoutes from "./routes/recipeRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
 import mealRoutes from "./routes/mealRoutes.js";
 import receiptRoutes from "./routes/recipeRoutes.js";  // Your receipt/scanner routes
@@ -76,6 +76,8 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/meals", mealRoutes);
 app.use("/api/receipt", receiptRoutes);
+app.use('/api/recipes', recipeRoutes);
+
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "../frontend")));
