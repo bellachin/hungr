@@ -1,33 +1,25 @@
-
-
 // backend/server.js
-
-import fs from "fs";
-
-app.get("/icons-list", (req, res) => {
-  const iconsDir = path.join(__dirname, "../frontend/icons");
-  fs.readdir(iconsDir, (err, files) => {
-    if (err) return res.status(500).json({ error: "Could not read icons folder" });
-    const svgs = files.filter(f => f.endsWith(".svg"));
-    res.json(svgs);
-  });
-});
-
-app.use("/icons", express.static(path.join(__dirname, "../frontend/icons")));
 
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
-import pkg from 'pg';  
+import pkg from 'pg';
 const { Pool } = pkg;
-import recipeRoutes from './routes/recipeRoutes.js';
 
+// Import routes
+import recipeRoutes from './routes/recipeRoutes.js';
+import faqRoutes from "./routes/faqRoutes.js";
+import itemRoutes from "./routes/itemRoutes.js";
+import mealRoutes from "./routes/mealRoutes.js";
+import receiptRoutes from "./routes/recipeRoutes.js"; // Your receipt/scanner routes
 
 dotenv.config();
 
+// Initialize express
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -48,8 +40,7 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-
-  // ============ ADD NEON CONNECTION ============
+// Neon/PostgreSQL connection
 let postgresConnected = false;
 let postgresPool = null;
 
@@ -70,14 +61,19 @@ if (process.env.DATABASE_URL) {
     });
 }
 
+// ========== ICONS ROUTES ==========
+app.get("/icons-list", (req, res) => {
+  const iconsDir = path.join(__dirname, "../frontend/icons");
+  fs.readdir(iconsDir, (err, files) => {
+    if (err) return res.status(500).json({ error: "Could not read icons folder" });
+    const svgs = files.filter(f => f.endsWith(".svg"));
+    res.json(svgs);
+  });
+});
 
-// Import routes
-import faqRoutes from "./routes/faqRoutes.js";
-import itemRoutes from "./routes/itemRoutes.js";
-import mealRoutes from "./routes/mealRoutes.js";
-import receiptRoutes from "./routes/recipeRoutes.js";  // Your receipt/scanner routes
+app.use("/icons", express.static(path.join(__dirname, "../frontend/icons")));
 
-// API Status
+// ========== API STATUS ==========
 app.get("/api/status", (req, res) => {
   res.json({
     mongodb: "connected",
@@ -85,16 +81,14 @@ app.get("/api/status", (req, res) => {
   });
 });
 
-// API Routes
+// ========== API ROUTES ==========
 app.use("/api/faq", faqRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/meals", mealRoutes);
 app.use("/api/receipt", receiptRoutes);
-app.use('/api/recipes', recipeRoutes);
 
-
-// Serve static files
+// Serve frontend static files
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 // SPA fallback
