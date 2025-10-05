@@ -38,8 +38,56 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background-color: #0b0b0b;
-  color: white;
+  background-color: #e1edf4;
+  color: #222;
+}
+
+/* Mobbin-inspired header styles */
+.mobbin-header {
+  position: relative;
+  padding: 64px 0 32px 0;
+  text-align: center;
+  background: none;
+  z-index: 1;
+}
+.mobbin-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin: 0;
+  color: #222;
+}
+.mobbin-subtitle {
+  font-size: 1.25rem;
+  color: #bfdcee;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+.mobbin-gradient-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  background: linear-gradient(135deg, #c8d4e4 0%, #bfdcee 100%);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.mobbin-main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 16px 64px 16px;
+  background: linear-gradient(120deg, #c8e4ca 0%, #d9e9d8 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(200,212,228,0.18);
+}
+
+.App .mobbin-main > * {
+  background: rgba(225,237,244,0.10);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px 0 rgba(140,186,128,0.10);
+  margin-bottom: 32px;
+  padding: 24px;
+  color: #222;
 }
 
 .growing-library {
@@ -85,7 +133,7 @@ body {
 }
 
 .stat p {
-  color: #aaa;
+  color: #98c1d9;
   font-size: 1rem;
 }
 
@@ -103,7 +151,8 @@ body {
 .float-icon {
   position: absolute;
   width: 60px;
-  opacity: 0.2;
+  opacity: 0.18;
+  filter: drop-shadow(0 2px 8px #bfdcee) brightness(1.1);
 }
 
 @keyframes drift1 {
@@ -120,4 +169,47 @@ body {
   0% { transform: translate(0px, 0px); }
   50% { transform: translate(10px, -20px); }
   100% { transform: translate(0px, 0px); }
+}
+
+.mobbin-stats-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2rem;
+  margin-top: 2.5rem;
+}
+.mobbin-stat-line {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+}
+.mobbin-stat-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mobbin-stat-number {
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #bfdcee;
+}
+.mobbin-stat-label {
+  font-size: 1.3rem;
+  color: #c8e4ca;
+  margin-left: 12px;
+}
+
+@media (max-width: 600px) {
+  .mobbin-header h1 {
+    font-size: 2rem;
+  }
+  .mobbin-main {
+    padding: 16px 4px 32px 4px;
+  }
+  .App .mobbin-main > * {
+    padding: 12px;
+    margin-bottom: 18px;
+  }
 }
