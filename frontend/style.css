@@ -121,3 +121,72 @@ body {
   50% { transform: translate(10px, -20px); }
   100% { transform: translate(0px, 0px); }
 }
+
+/* Add these to your style.css */
+
+.result-box {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 32px auto;
+  max-width: 600px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.result-box h3 {
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.result-box h4 {
+  color: #ddd;
+  margin-top: 16px;
+}
+
+.scanned-items ul {
+  list-style: none;
+  padding: 0;
+}
+
+.scanned-items li {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  margin: 4px 0;
+  border-radius: 6px;
+  border-left: 3px solid #4CAF50;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.recipes-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.recipes-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recipes-section li {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
