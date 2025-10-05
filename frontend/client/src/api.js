@@ -1,36 +1,29 @@
-const API_BASE = "http://localhost:5001/api";
+import axios from 'axios';
 
-// 📥 Fetch feed (user + friends)
-export async function getFeed(userId) {
-  const res = await fetch(`${API_BASE}/feed/${userId}`);
-  return res.json();
-}
+const API_URL = "http://localhost:5001/api";
 
-// 📤 Upload meal (with image)
-export async function addMeal(formData) {
-  const res = await fetch(`${API_BASE}/meals`, {
-    method: "POST",
-    body: formData, // FormData includes image + fields
-  });
-  return res.json();
-}
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` }),
+  };
+};
 
-// ❤️ Like or unlike a meal
-export async function likeMeal(mealId, userId) {
-  const res = await fetch(`${API_BASE}/meals/${mealId}/like`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId }),
-  });
-  return res.json();
-}
+// 🥗 API functions
+export const getFeed = (userId) =>
+  axios.get(`${API_URL}/feed/${userId}`, { headers: getAuthHeaders() });
 
-// 💬 Add a comment
-export async function commentMeal(mealId, userId, text) {
-  const res = await fetch(`${API_BASE}/meals/${mealId}/comment`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, text }),
-  });
-  return res.json();
-}
+export const addMeal = (mealData) =>
+  axios.post(`${API_URL}/meals`, mealData, { headers: getAuthHeaders() });
+
+export const addItem = (itemData) =>
+  axios.post(`${API_URL}/items`, itemData, { headers: getAuthHeaders() });
+
+// 💬 Add the missing ones
+export const likeMeal = (mealId) =>
+  axios.post(`${API_URL}/meals/${mealId}/like`, {}, { headers: getAuthHeaders() });
+
+export const commentMeal = (mealId, comment) =>
+  axios.post(`${API_URL}/meals/${mealId}/comment`, { comment }, { headers: getAuthHeaders() });
