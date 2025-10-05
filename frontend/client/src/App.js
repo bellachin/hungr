@@ -5,6 +5,48 @@ import Navbar from "./components/Navbar";
 import Auth from "./components/Auth";
 import { useState, useEffect } from "react";
 import { getFeed } from "./api";
+import React, { useRef, useEffect, useState } from "react";
+
+function AnimatedStat({ label, end }) {
+  const [visible, setVisible] = useState(false);
+  const [value, setValue] = useState(0);
+  const ref = useRef();
+
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+    let start = 0;
+    const duration = 1200;
+    const startTime = performance.now();
+    function animate(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      setValue(Math.floor(progress * end));
+      if (progress < 1) requestAnimationFrame(animate);
+      else setValue(end);
+    }
+    requestAnimationFrame(animate);
+  }, [visible, end]);
+
+  return (
+    <div className="mobbin-stat" ref={ref}>
+      <div className="mobbin-stat-number">{value}</div>
+      <div className="mobbin-stat-label">{label}</div>
+    </div>
+  );
+}
 
 function App() {
   const [user, setUser] = useState(null);
@@ -59,6 +101,14 @@ function App() {
         <Feed userId={user?.id} meals={meals} />
         {user && <AddMeal userId={user.id} onMealAdded={loadFeed} />}
       </main>
+      <section className="mobbin-stats-section">
+        <h2 className="mobbin-stats-title">Our Impact</h2>
+        <div className="mobbin-stats-row">
+          <AnimatedStat label="Meals Shared" end={1240} />
+          <AnimatedStat label="Users Joined" end={312} />
+          <AnimatedStat label="Food Saved (kg)" end={876} />
+        </div>
+      </section>
     </div>
   );
 }
