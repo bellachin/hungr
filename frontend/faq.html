@@ -1,0 +1,512 @@
+<!-- frontend/faq.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUNGR - Storage Tips</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --color-1: #C8D4E4; /* Light blue-gray */
+      --color-2: #BFDCEE; /* Light blue */
+      --color-3: #C8E4CA; /* Light green */
+      --color-4: #D9E9D8; /* Pale green */
+      --color-5: #E1EDF4; /* Very light blue */
+      --text-dark: #2c3e50;
+      --text-medium: #5a6c7d;
+      --text-light: #7a8a9a;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, var(--color-1) 0%, var(--color-2) 25%, var(--color-3) 50%, var(--color-4) 75%, var(--color-5) 100%);
+      min-height: 100vh;
+    }
+
+    .storage-tips-section {
+      padding: 80px 20px 40px;
+      min-height: 100vh;
+    }
+
+    .tips-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .tips-header h1 {
+      color: var(--text-dark);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    }
+
+    .tips-header p {
+      color: var(--text-medium);
+      font-size: 1.1rem;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: rgba(200, 212, 228, 0.95); /* Using color-1 with opacity */
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--text-dark);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-item {
+      color: var(--text-medium);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: var(--text-dark);
+    }
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--text-dark);
+    }
+
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 3rem 1rem 1.5rem;
+      border: 2px solid var(--color-2);
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      color: var(--text-dark);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--color-3);
+      background: white;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-medium);
+    }
+
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .category-tab {
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid transparent;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      color: var(--text-medium);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .category-tab:hover {
+      background: white;
+      border-color: var(--color-3);
+      transform: translateY(-2px);
+    }
+
+    .category-tab.active {
+      background: var(--color-3);
+      color: var(--text-dark);
+      border-color: var(--color-3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(200, 228, 202, 0.4);
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .food-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid rgba(200, 212, 228, 0.3);
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-color: var(--color-3);
+    }
+
+    .food-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .food-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .food-category {
+      background: var(--color-4);
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--text-medium);
+    }
+
+    .storage-locations {
+      margin: 1rem 0;
+    }
+
+    .location-item {
+      background: linear-gradient(135deg, var(--color-5), rgba(255,255,255,0.8));
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .location-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .location-freezer { 
+      border-left: 3px solid var(--color-2); 
+      background: linear-gradient(135deg, var(--color-2), rgba(255,255,255,0.9));
+    }
+    .location-fridge { 
+      border-left: 3px solid var(--color-1); 
+      background: linear-gradient(135deg, var(--color-1), rgba(255,255,255,0.9));
+    }
+    .location-pantry { 
+      border-left: 3px solid var(--color-3); 
+      background: linear-gradient(135deg, var(--color-3), rgba(255,255,255,0.9));
+    }
+
+    .storage-time {
+      color: var(--text-medium);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .storage-tips-list {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      margin-left: 1rem;
+    }
+
+    .spoilage-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-4);
+    }
+
+    .spoilage-title {
+      font-weight: 600;
+      color: #d9534f;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .spoilage-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .spoilage-list li {
+      padding: 0.25rem 0;
+      color: var(--text-medium);
+      font-size: 0.9rem;
+    }
+
+    .spoilage-list li:before {
+      content: "⚠️ ";
+      margin-right: 0.5rem;
+    }
+
+    .important-notes {
+      background: linear-gradient(135deg, var(--color-4), var(--color-5));
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      border: 1px solid var(--color-3);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+    }
+
+    .loading-spinner {
+      border: 3px solid var(--color-5);
+      border-top: 3px solid var(--color-3);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">HUNGR</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="inventory.html" class="nav-item">Inventory</a>
+        <a href="recipes.html" class="nav-item">Recipes</a>
+        <a href="faq.html" class="nav-item active">Storage Tips</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="storage-tips-section">
+    <div class="tips-header">
+      <h1>Food Storage Guidelines</h1>
+      <p>Learn how long your food lasts and how to store it properly</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        class="search-input" 
+        placeholder="Search for a food item..."
+        onkeyup="filterFoods()"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs" id="categoryTabs">
+      <button class="category-tab active" onclick="filterByCategory('all')">All</button>
+      <button class="category-tab" onclick="filterByCategory('meat')">Meat</button>
+      <button class="category-tab" onclick="filterByCategory('poultry')">Poultry</button>
+      <button class="category-tab" onclick="filterByCategory('seafood')">Seafood</button>
+    </div>
+
+    <!-- Food Cards Container -->
+    <div id="foodGrid" class="food-grid">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading storage tips...</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // [Keep all the existing JavaScript code the same]
+    const API_BASE_URL = 'http://localhost:5001/api';
+    let allFoods = [];
+    let currentCategory = 'all';
+
+    document.addEventListener('DOMContentLoaded', loadStorageTips);
+
+    async function loadStorageTips() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/faq/all`);
+        const data = await response.json();
+        
+        if (data.success) {
+          allFoods = data.data;
+          displayFoods(allFoods);
+        }
+      } catch (error) {
+        console.error('Error loading storage tips:', error);
+        document.getElementById('foodGrid').innerHTML = `
+          <div class="no-results">
+            <p>Unable to load storage tips. Please try again later.</p>
+          </div>
+        `;
+      }
+    }
+
+    function displayFoods(foods) {
+      const grid = document.getElementById('foodGrid');
+      
+      if (foods.length === 0) {
+        grid.innerHTML = `
+          <div class="no-results">
+            <p>No items found</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = foods.map(food => `
+        <div class="food-card" data-category="${food.category}">
+          <div class="food-header">
+            <h3 class="food-name">${food.foodName}</h3>
+            <span class="food-category">${food.category}</span>
+          </div>
+          
+          <div class="storage-locations">
+            ${food.storageGuidelines.fridge ? `
+              <div class="location-item location-fridge">
+                <div class="location-header">
+                  <span>❄️ Fridge</span>
+                </div>
+                <div class="storage-time">⏱️ ${food.storageGuidelines.fridge.time}</div>
+                ${food.storageGuidelines.fridge.tips && food.storageGuidelines.fridge.tips.length > 0 ? `
+                  <ul class="storage-tips-list">
+                    ${food.storageGuidelines.fridge.tips.map(tip => `<li>${tip}</li>`).join('')}
+                  </ul>
+                ` : ''}
+              </div>
+            ` : ''}
+            
+            ${food.storageGuidelines.freezer ? `
+              <div class="location-item location-freezer">
+                <div class="location-header">
+                  <span>🧊 Freezer</span>
+                </div>
+                <div class="storage-time">⏱️ ${food.storageGuidelines.freezer.time}</div>
+                ${food.storageGuidelines.freezer.tips && food.storageGuidelines.freezer.tips.length > 0 ? `
+                  <ul class="storage-tips-list">
+                    ${food.storageGuidelines.freezer.tips.map(tip => `<li>${tip}</li>`).join('')}
+                  </ul>
+                ` : ''}
+              </div>
+            ` : ''}
+            
+            ${food.storageGuidelines.pantry ? `
+              <div class="location-item location-pantry">
+                <div class="location-header">
+                  <span>🥫 Pantry</span>
+                </div>
+                <div class="storage-time">⏱️ ${food.storageGuidelines.pantry.time}</div>
+                ${food.storageGuidelines.pantry.tips && food.storageGuidelines.pantry.tips.length > 0 ? `
+                  <ul class="storage-tips-list">
+                    ${food.storageGuidelines.pantry.tips.map(tip => `<li>${tip}</li>`).join('')}
+                  </ul>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
+          
+          ${food.signs_of_spoilage && food.signs_of_spoilage.length > 0 ? `
+            <div class="spoilage-section">
+              <div class="spoilage-title">Signs of Spoilage:</div>
+              <ul class="spoilage-list">
+                ${food.signs_of_spoilage.map(sign => `<li>${sign}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          
+          ${food.important_notes && food.important_notes.length > 0 ? `
+            <div class="important-notes">
+              💡 ${food.important_notes.join(' • ')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function filterFoods() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      let filtered = allFoods;
+      
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(food => food.category === currentCategory);
+      }
+      
+      if (searchTerm) {
+        filtered = filtered.filter(food => 
+          food.foodName.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      displayFoods(filtered);
+    }
+
+    function filterByCategory(category) {
+      currentCategory = category;
+      
+      document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      filterFoods();
+    }
+  </script>
+</body>
+</html>

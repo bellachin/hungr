@@ -1,44 +1,250 @@
-<!-- frontend/inventory.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HUNGR - My Inventory</title>
-  <link rel="stylesheet" href="style.css">
   <style>
+    /* Color Variables - Using ONLY the provided palette */
+    :root {
+      --color-primary: #C8D4E4;
+      --color-secondary: #BFDCEE;
+      --color-accent: #C8E4CA;
+      --color-background: #D9E9D8;
+      --color-highlight: #E1EDF4;
+      --color-text: #333333; /* Derived from the colors for contrast */
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: var(--color-background);
+      color: var(--color-text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+    }
+    
+    /* Navigation Bar */
+    .navbar {
+      background-color: var(--color-primary);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+    
+    .nav-brand {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    
+    .nav-item {
+      color: var(--color-text);
+      text-decoration: none;
+      padding: 0.5rem 0;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-item.active {
+      color: var(--color-text);
+    }
+    
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--color-accent);
+    }
+    
+    .nav-item:hover {
+      color: var(--color-text);
+      transform: translateY(-2px);
+    }
+    
+    /* Main Content */
+    .inventory-section {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    
+    .inventory-section h1 {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: var(--color-text);
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    
+    /* Inventory Grid */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .storage-section {
+      background-color: var(--color-highlight);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+    
+    .storage-section:hover {
+      transform: translateY(-5px);
+    }
+    
+    .storage-section h3 {
+      margin-top: 0;
+      color: var(--color-text);
+      border-bottom: 2px solid var(--color-secondary);
+      padding-bottom: 0.75rem;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .storage-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0 0;
+    }
+    
+    /* Item Containers */
     .item-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.05);
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border-radius: 6px;
+      background: var(--color-secondary);
+      padding: 1rem;
+      margin: 0.75rem 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .item-container:hover {
+      background: var(--color-primary);
+      transform: scale(1.02);
     }
     
     .item-name {
-      color: #333;
+      color: var(--color-text);
       flex-grow: 1;
+      font-weight: 500;
     }
     
     .remove-btn {
-      background: #ff4444;
-      color: white;
+      background: var(--color-accent);
+      color: var(--color-text);
       border: none;
-      padding: 0.25rem 0.75rem;
-      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
     }
     
     .remove-btn:hover {
-      background: #cc0000;
+      background: var(--color-primary);
+      transform: scale(1.05);
     }
     
-    .loading {
-      opacity: 0.5;
-      pointer-events: none;
+    .empty {
+      text-align: center;
+      color: var(--color-text);
+      font-style: italic;
+      padding: 1.5rem 0;
+      opacity: 0.7;
+    }
+    
+    /* Action Buttons */
+    .inventory-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    
+    .action-btn {
+      background-color: var(--color-accent);
+      color: var(--color-text);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .action-btn:hover {
+      background-color: var(--color-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .clear-btn {
+      background-color: var(--color-secondary);
+    }
+    
+    .clear-btn:hover {
+      background-color: var(--color-primary);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .inventory-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        gap: 1rem;
+      }
+      
+      .inventory-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -80,32 +286,26 @@
       <button class="action-btn" onclick="getRecipesFromInventory()">
         🍳 Get Recipes from My Inventory
       </button>
-      <button class="action-btn" onclick="clearAllInventory()" style="background: #ff4444;">
+      <button class="action-btn clear-btn" onclick="clearAllInventory()">
         🗑️ Clear All Items
       </button>
     </div>
   </section>
 
   <script>
-    const API_BASE_URL = 'http://localhost:5001/api';
+    // Hard-coded inventory items using only the requested items
+    const hardCodedInventory = {
+      freezer: ["Frozen Berries", "Ice Cream", "Frozen Vegetables"],
+      fridge: ["Berries", "Avocados", "Milk", "Yogurt", "Cheese"],
+      pantry: ["Pasta", "Rice", "Canned Beans", "Flour", "Olive Oil"]
+    };
     
     // Load inventory when page loads
     document.addEventListener('DOMContentLoaded', loadInventory);
     
-    async function loadInventory() {
+    function loadInventory() {
       console.log('📋 Loading inventory...');
-      try {
-        const response = await fetch(`${API_BASE_URL}/receipt/inventory`);
-        const data = await response.json();
-        
-        console.log('📦 Inventory data:', data);
-        
-        if (data.success) {
-          displayInventory(data.inventory);
-        }
-      } catch (error) {
-        console.error('❌ Error loading inventory:', error);
-      }
+      displayInventory(hardCodedInventory);
     }
     
     function displayInventory(inventory) {
@@ -124,7 +324,7 @@
           </li>`
         ).join('');
       } else {
-        freezerList.innerHTML = '<li class="empty">No items</li>';
+        freezerList.innerHTML = '<li class="empty">No items in freezer</li>';
       }
       
       // Fridge items
@@ -137,7 +337,7 @@
           </li>`
         ).join('');
       } else {
-        fridgeList.innerHTML = '<li class="empty">No items</li>';
+        fridgeList.innerHTML = '<li class="empty">No items in fridge</li>';
       }
       
       // Pantry items
@@ -150,57 +350,37 @@
           </li>`
         ).join('');
       } else {
-        pantryList.innerHTML = '<li class="empty">No items</li>';
+        pantryList.innerHTML = '<li class="empty">No items in pantry</li>';
       }
     }
     
-    async function removeItem(itemName, location) {
+    function removeItem(itemName, location) {
       console.log(`🗑️ Removing ${itemName} from ${location}`);
       
       if (!confirm(`Remove ${itemName} from ${location}?`)) {
         return;
       }
       
-      try {
-        const response = await fetch(`${API_BASE_URL}/receipt/remove-item`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ itemName, location })
-        });
-        
-        const data = await response.json();
-        console.log('Remove response:', data);
-        
-        if (data.success) {
-          // Reload inventory to show updated list
-          loadInventory();
-        } else {
-          alert('Failed to remove item');
-        }
-      } catch (error) {
-        console.error('❌ Error removing item:', error);
+      // Remove from hard-coded inventory
+      const index = hardCodedInventory[location].indexOf(itemName);
+      if (index > -1) {
+        hardCodedInventory[location].splice(index, 1);
+        // Reload inventory to show updated list
+        loadInventory();
       }
     }
     
-    async function clearAllInventory() {
+    function clearAllInventory() {
       if (!confirm('Are you sure you want to clear ALL items from your inventory?')) {
         return;
       }
       
-      try {
-        const response = await fetch(`${API_BASE_URL}/receipt/clear-inventory`, {
-          method: 'DELETE'
-        });
-        
-        const data = await response.json();
-        if (data.success) {
-          loadInventory();
-        }
-      } catch (error) {
-        console.error('Error clearing inventory:', error);
-      }
+      // Clear all hard-coded inventory
+      hardCodedInventory.freezer = [];
+      hardCodedInventory.fridge = [];
+      hardCodedInventory.pantry = [];
+      
+      loadInventory();
     }
     
     function getRecipesFromInventory() {
