@@ -244,6 +244,75 @@ body {
   box-shadow: 0 2px 8px rgba(200,212,228,0.10);
 }
 
+/* Mobbin-style stats section */
+.mobbin-stats-section {
+  width: 100%;
+  background: #f7f8fa;
+  padding: 4rem 0 3rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.mobbin-stats-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 2rem;
+}
+.mobbin-stats-row {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+.mobbin-stat {
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 160px;
+  transition: transform 0.3s;
+}
+.mobbin-stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+.mobbin-stat-label {
+  font-size: 1.1rem;
+  color: #444;
+  font-weight: 500;
+  text-align: center;
+}
+.mobbin-stat:hover {
+  transform: scale(1.06);
+}
+
+/* Login button style */
+.mobbin-login-btn {
+  margin-top: 2.5rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+  transition: background 0.2s, transform 0.2s;
+  display: block;
+}
+.mobbin-login-btn:hover {
+  background: #5a67d8;
+  transform: scale(1.05);
+}
+
 @media (max-width: 600px) {
   .mobbin-header h1 {
     font-size: 2rem;
