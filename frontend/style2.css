@@ -17,6 +17,8 @@
   outline: none;
   z-index: 10;
 }
+
+
 .camera-btn:active, .camera-btn:focus {
   box-shadow: 0 4px 18px 0 rgba(0,0,0,0.28);
   border-color: #eee;
@@ -551,3 +553,4 @@ body {
 .close-btn:hover {
   color: #000;
 }
+
