@@ -159,3 +159,52 @@ async function scanReceipt(file) {
     resultBox.innerHTML = '<p>Error scanning receipt. Please try again.</p>';
   }
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const iconContainer = document.querySelector(".floating-icons");
+  try {
+    const response = await fetch("/icons-list");
+    const icons = await response.json();
+
+    icons.forEach(icon => {
+      const img = document.createElement("img");
+      img.src = `./icons/${icon}`;
+      img.alt = icon.replace(".svg", "");
+      img.classList.add("floating-icon");
+
+      img.style.left = `${Math.random() * 100}%`;
+      img.style.top = `${Math.random() * 100}%`;
+      img.style.animationDelay = `${Math.random() * 5}s`;
+
+      iconContainer.appendChild(img);
+    });
+  } catch (err) {
+    console.error("⚠️ Could not load icons:", err);
+  }
+
+  // Animate counts
+  const counters = document.querySelectorAll(".count");
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute("data-target");
+      const count = +counter.innerText;
+      const increment = target / 200;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(updateCount, 20);
+      } else {
+        counter.innerText = target.toLocaleString();
+      }
+    };
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        updateCount();
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+
+    observer.observe(counter);
+  });
+});

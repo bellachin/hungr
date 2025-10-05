@@ -1,5 +1,20 @@
 
+
 // backend/server.js
+
+import fs from "fs";
+
+app.get("/icons-list", (req, res) => {
+  const iconsDir = path.join(__dirname, "../frontend/icons");
+  fs.readdir(iconsDir, (err, files) => {
+    if (err) return res.status(500).json({ error: "Could not read icons folder" });
+    const svgs = files.filter(f => f.endsWith(".svg"));
+    res.json(svgs);
+  });
+});
+
+app.use("/icons", express.static(path.join(__dirname, "../frontend/icons")));
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
