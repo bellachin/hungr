@@ -2,9 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+
 import mealRoutes from "./routes/mealRoutes.js"; //janet
 import userRoutes from "./routes/userRoutes.js"; //janet
 import feedRoutes from "./routes/feedRoutes.js"; //janet
+import itemRoutes from "./routes/itemRoutes.js";
 
 
 dotenv.config();
@@ -26,6 +28,8 @@ mongoose
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 
+
+app.use("/api/items", itemRoutes);
 app.use("/api/users", userRoutes);//janet
 app.use("/api/meals", mealRoutes);//janet
 app.use("/api/feed", feedRoutes);//janet
