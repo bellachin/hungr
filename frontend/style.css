@@ -1,3 +1,40 @@
+/* Camera button styles */
+.camera-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #000;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  outline: none;
+  z-index: 10;
+}
+.camera-btn:active, .camera-btn:focus {
+  box-shadow: 0 4px 18px 0 rgba(0,0,0,0.28);
+  border-color: #eee;
+}
+.camera-btn svg {
+  width: 36px;
+  height: 36px;
+}
+.camera-btn svg .icon-bg {
+  fill: #fff;
+  fill-opacity: 0.15;
+}
+.camera-btn svg .icon-outline, .camera-btn svg .icon-lens {
+  stroke: #fff;
+}
+.camera-btn svg .icon-lens {
+  fill: none;
+}
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
