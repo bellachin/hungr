@@ -201,6 +201,47 @@ body {
   margin-left: 12px;
 }
 
+/* Mobbin-style navbar */
+.mobbin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #bfdcee;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(200,212,228,0.10);
+  border-radius: 0 0 18px 18px;
+  margin-bottom: 1.5rem;
+}
+.navbar-logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #222;
+  letter-spacing: 2px;
+}
+.navbar-list {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.navbar-item {
+  font-size: 1.1rem;
+  color: #222;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 18px;
+  border-radius: 18px;
+  background: none;
+  border: none;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar-item.navbar-active {
+  background: #c8e4ca;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(200,212,228,0.10);
+}
+
 @media (max-width: 600px) {
   .mobbin-header h1 {
     font-size: 2rem;
