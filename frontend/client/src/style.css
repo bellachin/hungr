@@ -220,6 +220,8 @@ body {
 }
 .navbar-list {
   display: flex;
+  flex: 1;
+  justify-content: space-evenly;
   gap: 2.5rem;
   list-style: none;
   margin: 0;

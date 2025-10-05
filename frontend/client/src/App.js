@@ -10,6 +10,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAuth, setShowAuth] = useState(false);
 
   // Check if user is logged in
   useEffect(() => {
@@ -44,55 +45,19 @@ function App() {
     return <div className="App">Loading...</div>;
   }
 
-  // If not logged in, show Auth component
-  if (!user) {
-    return <Auth onLogin={setUser} />;
+  // Show Auth modal if requested
+  if (showAuth) {
+    return <Auth onLogin={(u) => { setUser(u); setShowAuth(false); }} />;
   }
 
   // If logged in, show the app
   return (
     <div className="App">
-      <Navbar active="home" />
-      {/* Header removed as requested */}
-      <header
-        style={{
-          padding: "1rem 2rem",
-          background: "white",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
-          <h1 style={{ margin: 0, color: "#667eea" }}>Hungr</h1>
-          <p style={{ margin: "0.25rem 0 0 0", color: "#666" }}>
-            Welcome, {user.displayName || user.username}!
-          </p>
-        </div>
-        <button
-          onClick={logout}
-          style={{
-            padding: "0.5rem 1.5rem",
-            background: "#dc3545",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontWeight: "600",
-          }}
-        >
-          Logout
-        </button>
-      </header>
-
+      <Navbar active="home" user={user} onLoginClick={() => setShowAuth(true)} onLogout={logout} />
       <GrowingLibrary />
-
       <main className="mobbin-main">
-        <Feed userId={userId} meals={meals} />
-        <AddMeal userId={user.id} onMealAdded={loadFeed} />
-        <Feed userId={user.id} meals={meals} />
+        <Feed userId={user?.id} meals={meals} />
+        {user && <AddMeal userId={user.id} onMealAdded={loadFeed} />}
       </main>
     </div>
   );
