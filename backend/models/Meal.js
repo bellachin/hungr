@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const mealSchema = new mongoose.Schema({
-  userId: { type: String, required: true }, // link to user later
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   mealName: { type: String, required: true },
-  ingredients: [{ type: String }],
-  rating: { type: Number, min: 1, max: 5, required: true },
+  ingredients: { type: [String], default: [] },
+  rating: { type: Number, required: true }, // user’s raw rating
   notes: String,
-  imageUrl: String,
+  rankScore: { type: Number, default: 0 }, // derived score
 }, { timestamps: true });
 
 export default mongoose.model("Meal", mealSchema);
