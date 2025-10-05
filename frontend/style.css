@@ -38,12 +38,15 @@
 }
 
 /* ================= Body Styles ================= */
+/* ================= Body Styles ================= */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #fafafa;
+  /* Updated background to match green/honeydew palette */
+  background: linear-gradient(135deg, #D9E9D8 0%, #D9E9D8 100%);
   color: #333;
 }
+
 
 /* ================= Growing Library ================= */
 .growing-library {
@@ -52,12 +55,16 @@ body {
   text-align: center;
   padding: 120px 20px;
   margin-top: 60px;
+  background-color: #D9E9D8; /* optional light background */
 }
+
 .growing-library h2 {
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 3rem;
+  color: #333;
 }
+
 .stats {
   display: flex;
   justify-content: center;
@@ -66,29 +73,32 @@ body {
   position: relative;
   z-index: 1;
 }
+
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s ease;
-}
-.stat.visible {
+  /* Make numbers visible immediately */
   opacity: 1;
   transform: translateY(0);
+  transition: all 0.3s ease;
 }
+
 .stat h3 {
   font-size: 2rem;
   font-weight: bold;
   margin: 0.5rem 0;
-}
-.stat p {
-  color: #aaa;
-  font-size: 1rem;
+  color: #333; /* ensures numbers are visible */
 }
 
-/* ================= Floating Icons ================= */
+.stat p {
+  color: #555;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Floating icons (keep for visuals) */
+.floating-icons,
 .floating-icons-corners {
   position: absolute;
   top: 0;
@@ -98,12 +108,14 @@ body {
   pointer-events: none;
   z-index: 0;
 }
+
 .float-icon {
   position: absolute;
   width: 60px;
   opacity: 0.7;
   animation: float 6s ease-in-out infinite alternate;
 }
+
 @keyframes float {
   from {
     transform: translateY(0px) rotate(0deg);
@@ -112,6 +124,7 @@ body {
     transform: translateY(-20px) rotate(10deg);
   }
 }
+
 
 /* ================= Navigation Bar ================= */
 .navbar {
