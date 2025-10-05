@@ -158,4 +158,32 @@ async function scanReceipt(file) {
     console.error('❌ Error:', error);
     resultBox.innerHTML = '<p>Reciept Scanned!</p>';
   }
+  
+  // LIKE BUTTON FUNCTIONALITY
+document.querySelectorAll(".like-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    button.classList.toggle("liked");
+    button.textContent = button.classList.contains("liked") ? "💖 Liked" : "❤️ Like";
+  });
+});
+
+// MODAL FUNCTIONALITY
+const modal = document.getElementById("modal");
+const ingredientText = document.getElementById("ingredientText");
+const closeBtn = document.querySelector(".close-btn");
+
+document.querySelectorAll(".ingredients-btn").forEach(button => {
+  button.addEventListener("click", (e) => {
+    const post = e.target.closest(".post");
+    const ingredients = post.getAttribute("data-ingredients");
+    ingredientText.textContent = ingredients;
+    modal.style.display = "block";
+  });
+});
+
+closeBtn.onclick = () => (modal.style.display = "none");
+window.onclick = (e) => {
+  if (e.target === modal) modal.style.display = "none";
+};
+
 }
