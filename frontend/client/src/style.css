@@ -293,6 +293,26 @@ body {
   transform: scale(1.06);
 }
 
+/* Login button style */
+.mobbin-login-btn {
+  margin-top: 2.5rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+  transition: background 0.2s, transform 0.2s;
+  display: block;
+}
+.mobbin-login-btn:hover {
+  background: #5a67d8;
+  transform: scale(1.05);
+}
+
 @media (max-width: 600px) {
   .mobbin-header h1 {
     font-size: 2rem;

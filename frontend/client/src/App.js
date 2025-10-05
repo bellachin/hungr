@@ -108,6 +108,7 @@ function App() {
           <AnimatedStat label="Users Joined" end={312} />
           <AnimatedStat label="Food Saved (kg)" end={876} />
         </div>
+        <button className="mobbin-login-btn">Login</button>
       </section>
     </div>
   );
