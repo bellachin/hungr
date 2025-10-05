@@ -303,3 +303,48 @@ function addFloatingIcons() {
     container.appendChild(iconElement);
   });
 }
+
+// frontend/script.js - Update for scanning on homepage
+document.getElementById('cameraBtn').addEventListener('click', function() {
+  document.getElementById('receiptInput').click();
+});
+
+document.getElementById('receiptInput').addEventListener('change', async function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    await scanReceipt(file);
+  }
+});
+
+async function scanReceipt(file) {
+  const resultBox = document.getElementById('resultBox');
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = '<p>📸 Scanning receipt...</p>';
+  
+  try {
+    const formData = new FormData();
+    formData.append('receipt', file);
+    
+    const response = await fetch(`${API_BASE_URL}/receipt/scan`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      resultBox.innerHTML = `
+        <div class="scan-success">
+          <h3>✅ Items Scanned & Sorted!</h3>
+          <p>${Object.values(data.sorted).flat().length} items have been added to your inventory</p>
+          <a href="inventory.html" class="action-btn">
+            📦 View Inventory
+          </a>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    resultBox.innerHTML = '<p>Error scanning receipt. Please try again.</p>';
+  }
+}

@@ -1,0 +1,96 @@
+<!-- frontend/inventory.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUNGR - My Inventory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">HUNGR</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="inventory.html" class="nav-item active">Inventory</a>
+        <a href="recipes.html" class="nav-item">Recipes</a>
+        <a href="faq.html" class="nav-item">Storage Tips</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="inventory-section">
+    <h1>My Food Inventory</h1>
+    
+    <div class="inventory-grid">
+      <div class="storage-section freezer">
+        <h3>🧊 Freezer</h3>
+        <ul id="freezerItems"></ul>
+      </div>
+      
+      <div class="storage-section fridge">
+        <h3>❄️ Fridge</h3>
+        <ul id="fridgeItems"></ul>
+      </div>
+      
+      <div class="storage-section pantry">
+        <h3>🥫 Pantry</h3>
+        <ul id="pantryItems"></ul>
+      </div>
+    </div>
+    
+    <div class="inventory-actions">
+      <button class="action-btn" onclick="getRecipesFromInventory()">
+        🍳 Get Recipes from My Inventory
+      </button>
+    </div>
+  </section>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:5001/api';
+    
+    // Load inventory when page loads
+    document.addEventListener('DOMContentLoaded', loadInventory);
+    
+    async function loadInventory() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/receipt/inventory`);
+        const data = await response.json();
+        
+        if (data.success) {
+          displayInventory(data.inventory);
+        }
+      } catch (error) {
+        console.error('Error loading inventory:', error);
+      }
+    }
+    
+    function displayInventory(inventory) {
+      // Freezer items
+      const freezerList = document.getElementById('freezerItems');
+      freezerList.innerHTML = inventory.freezer.map(item => 
+        `<li>${item}</li>`
+      ).join('') || '<li class="empty">No items</li>';
+      
+      // Fridge items
+      const fridgeList = document.getElementById('fridgeItems');
+      fridgeList.innerHTML = inventory.fridge.map(item => 
+        `<li>${item}</li>`
+      ).join('') || '<li class="empty">No items</li>';
+      
+      // Pantry items
+      const pantryList = document.getElementById('pantryItems');
+      pantryList.innerHTML = inventory.pantry.map(item => 
+        `<li>${item}</li>`
+      ).join('') || '<li class="empty">No items</li>';
+    }
+    
+    async function getRecipesFromInventory() {
+      // Redirect to recipes page or show recipes
+      window.location.href = 'recipes.html';
+    }
+  </script>
+</body>
+</html>

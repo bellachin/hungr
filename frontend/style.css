@@ -122,71 +122,127 @@ body {
   100% { transform: translate(0px, 0px); }
 }
 
-/* Add these to your style.css */
+/* Add to your style.css */
 
-.result-box {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 24px;
-  margin: 32px auto;
-  max-width: 600px;
+/* Navigation Bar */
+.navbar {
+  background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
-.result-box h3 {
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #fff;
-  margin-bottom: 16px;
+  text-decoration: none;
 }
 
-.result-box h4 {
-  color: #ddd;
-  margin-top: 16px;
+.nav-links {
+  display: flex;
+  gap: 2rem;
 }
 
-.scanned-items ul {
+.nav-item {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Adjust main content for fixed navbar */
+.growing-library {
+  margin-top: 60px;
+}
+
+/* Inventory Page Styles */
+.inventory-section {
+  padding: 80px 20px 40px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #b8d4b0 0%, #d4c5a0 50%, #e8d5b7 100%);
+}
+
+.inventory-section h1 {
+  text-align: center;
+  color: #2d5a2d;
+  margin-bottom: 2rem;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.storage-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.storage-section.freezer {
+  border-top: 4px solid #00BCD4;
+}
+
+.storage-section.fridge {
+  border-top: 4px solid #2196F3;
+}
+
+.storage-section.pantry {
+  border-top: 4px solid #FF9800;
+}
+
+.storage-section h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.storage-section ul {
   list-style: none;
   padding: 0;
 }
 
-.scanned-items li {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 8px 16px;
-  margin: 4px 0;
+.storage-section li {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.75rem;
+  margin: 0.5rem 0;
   border-radius: 6px;
-  border-left: 3px solid #4CAF50;
+  color: #333;
 }
 
-.action-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  margin: 8px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.2s;
+.storage-section li.empty {
+  color: #999;
+  font-style: italic;
 }
 
-.action-btn:hover {
-  transform: translateY(-2px);
-}
-
-.recipes-section {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.recipes-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.recipes-section li {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 8px;
+.inventory-actions {
+  text-align: center;
+  margin-top: 3rem;
 }

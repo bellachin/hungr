@@ -119,17 +119,13 @@
 
 // backend/routes/recipeRoutes.js
 // backend/routes/recipeRoutes.js
+// backend/routes/receiptRoutes.js
 import express from 'express';
+import { scanReceipt, getInventory } from '../controllers/receiptController.js';
 
 const router = express.Router();
 
-// Temporary routes until you connect the controller
-router.post('/suggest', (req, res) => {
-  res.json({ message: "Recipe suggest endpoint", ingredients: req.body.ingredients });
-});
-
-router.get('/all', (req, res) => {
-  res.json({ message: "All recipes endpoint" });
-});
+router.post('/scan', scanReceipt);
+router.get('/inventory', getInventory);
 
 export default router;
